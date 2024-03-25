@@ -10,11 +10,13 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.db.models import Q
 from DjangoEcommerce.settings import BASE_URL
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 @login_required(login_url="/admin/")
 def admin_home(request):
     return render(request,"admin_templates/home.html")
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class CategoriesListView(ListView):
     model=Categories
     template_name="admin_templates/category_list.html"
@@ -38,12 +40,14 @@ class CategoriesListView(ListView):
         return context
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class CategoriesCreate(SuccessMessageMixin,CreateView):
     model=Categories
     success_message="Category Added!"
     fields="__all__"
     template_name="admin_templates/category_create.html"
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class CategoriesUpdate(SuccessMessageMixin,UpdateView):
     model=Categories
     success_message="Category Updated!"
@@ -51,6 +55,7 @@ class CategoriesUpdate(SuccessMessageMixin,UpdateView):
     template_name="admin_templates/category_update.html"
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class SubCategoriesListView(ListView):
     model=SubCategories
     template_name="admin_templates/sub_category_list.html"
@@ -74,18 +79,21 @@ class SubCategoriesListView(ListView):
         return context
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class SubCategoriesCreate(SuccessMessageMixin,CreateView):
     model=SubCategories
     success_message="Sub Category Added!"
     fields="__all__"
     template_name="admin_templates/sub_category_create.html"
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class SubCategoriesUpdate(SuccessMessageMixin,UpdateView):
     model=SubCategories
     success_message="Sub Category Updated!"
     fields="__all__"
     template_name="admin_templates/sub_category_update.html"
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class MerchantUserListView(ListView):
     model=MerchantUser
     template_name="admin_templates/merchant_list.html"
@@ -109,6 +117,7 @@ class MerchantUserListView(ListView):
         return context
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class MerchantUserCreateView(SuccessMessageMixin,CreateView):
     template_name="admin_templates/merchant_create.html"
     model=CustomUser
@@ -143,6 +152,7 @@ class MerchantUserCreateView(SuccessMessageMixin,CreateView):
         messages.success(self.request,"Merchant User Created")
         return HttpResponseRedirect(reverse("merchant_list"))
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class MerchantUserUpdateView(SuccessMessageMixin,UpdateView):
     template_name="admin_templates/merchant_update.html"
     model=CustomUser
@@ -185,6 +195,7 @@ class MerchantUserUpdateView(SuccessMessageMixin,UpdateView):
 
         
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class ProductView(View):
     def get(self,request,*args,**kwargs):
         categories=Categories.objects.filter(is_active=1)
@@ -257,7 +268,7 @@ def file_upload(request):
     file_url=fs.url(filename)
     return HttpResponse('{"location":"'+BASE_URL+''+file_url+'"}')
 
-
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class ProductListView(ListView):
     model=Products
     template_name="admin_templates/product_list.html"
@@ -286,6 +297,7 @@ class ProductListView(ListView):
         return context
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class ProductEdit(View):
 
     def get(self,request,*args,**kwargs):
@@ -374,6 +386,7 @@ class ProductEdit(View):
         
         return HttpResponse("OK")
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class ProductAddMedia(View):
     def get(self,request,*args,**kwargs):
         product_id=kwargs["product_id"]
@@ -397,6 +410,7 @@ class ProductAddMedia(View):
         
         return HttpResponse("OK")
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class ProductEditMedia(View):
     def get(self,request,*args,**kwargs):
         product_id=kwargs["product_id"]
@@ -404,6 +418,7 @@ class ProductEditMedia(View):
         product_medias=ProductMedia.objects.filter(product_id=product_id)
         return render(request,"admin_templates/product_edit_media.html",{"product":product,"product_medias":product_medias})
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class ProductMediaDelete(View):
     def get(self,request,*args,**kwargs):
         media_id=kwargs["id"]
@@ -419,6 +434,7 @@ class ProductMediaDelete(View):
         product_media.delete()
         return HttpResponseRedirect(reverse("product_edit_media",kwargs={"product_id":product_id}))
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class ProductAddStocks(View):
     def get(self,request,*args,**kwargs):
         product_id=kwargs["product_id"]
@@ -440,6 +456,7 @@ class ProductAddStocks(View):
         return HttpResponseRedirect(reverse("product_add_stocks",kwargs={"product_id":product_id}))
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class StaffUserListView(ListView):
     model=StaffUser
     template_name="admin_templates/staff_list.html"
@@ -463,6 +480,7 @@ class StaffUserListView(ListView):
         return context
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class StaffUserCreateView(SuccessMessageMixin,CreateView):
     template_name="admin_templates/staff_create.html"
     model=CustomUser
@@ -488,6 +506,7 @@ class StaffUserCreateView(SuccessMessageMixin,CreateView):
         messages.success(self.request,"Staff User Created")
         return HttpResponseRedirect(reverse("staff_list"))
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class StaffUserUpdateView(SuccessMessageMixin,UpdateView):
     template_name="admin_templates/staff_update.html"
     model=CustomUser
@@ -519,6 +538,7 @@ class StaffUserUpdateView(SuccessMessageMixin,UpdateView):
         return HttpResponseRedirect(reverse("staff_list"))
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class CustomerUserListView(ListView):
     model=CustomerUser
     template_name="admin_templates/customer_list.html"
@@ -542,6 +562,7 @@ class CustomerUserListView(ListView):
         return context
 
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class CustomerUserCreateView(SuccessMessageMixin,CreateView):
     template_name="admin_templates/customer_create.html"
     model=CustomUser
@@ -567,6 +588,7 @@ class CustomerUserCreateView(SuccessMessageMixin,CreateView):
         messages.success(self.request,"Customer User Created")
         return HttpResponseRedirect(reverse("customer_list"))
 
+@method_decorator(login_required(login_url="/admindashboard/admin"), name='dispatch')
 class CustomerUserUpdateView(SuccessMessageMixin,UpdateView):
     template_name="admin_templates/customer_update.html"
     model=CustomUser
